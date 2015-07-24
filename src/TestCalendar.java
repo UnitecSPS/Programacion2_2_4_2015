@@ -1,5 +1,5 @@
 
-import java.util.Date;
+import java.util.Calendar;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -11,9 +11,8 @@ import java.util.Date;
  *
  * @author Aula
  */
-public class TestDate {
+public class TestCalendar {
     public static void main(String[] args) {
-        Date now = new Date();
-        Date old = new Date(5);
+        Calendar c = Calendar.getInstance();
     }
 }
