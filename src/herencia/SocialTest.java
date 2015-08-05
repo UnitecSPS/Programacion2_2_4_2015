@@ -11,7 +11,23 @@ package herencia;
  */
 public class SocialTest {
     public static void main(String[] args) {
-        Twitter tw = new Twitter();
-        tw.nombre  ="perfectamente";
+        //UPCASTING
+        RedSocial rst = new Twitter("Pancho","Pepe","pancho@patito.com");
+        RedSocial rsf = new Facebook("Pancho","Pepe","pancho@patito.com");
+        RedSocial rs = new RedSocial("Pancho","Pepe","pancho@patito.com");
+        /*FORMATO instanceof:
+            objeto instanceof Clase
+        */
+        if(rst instanceof Twitter){
+            //dowcasting para asignarle el username
+            System.out.println("Es Twitter!");
+        }
+        
+        System.out.println("objeto: " + rst.toString());
+        
+        rst.quienSoy();
+        rsf.quienSoy();
+        rs.quienSoy();
+        
     }
 }

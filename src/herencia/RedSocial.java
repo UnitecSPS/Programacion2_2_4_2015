@@ -37,4 +37,14 @@ public class RedSocial {
     public void addPost(String msg){
         posts.add( new Post(msg) );
     }
+
+    @Override
+    public String toString() {
+        return "nombre=" + nombre + ", email=" + email ;
+    }
+    
+    public void quienSoy(){
+        System.out.println("SOY REDSOCIAL");
+    }
+    
 }

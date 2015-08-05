@@ -29,4 +29,22 @@ public class Twitter extends RedSocial {
         nombre = "carlos"; 
         return username;
     }
+
+    @Override
+    /*
+    
+    lo mismo:
+     super.email
+     this.email
+     email
+    */
+    public String toString() {
+        return "Twitter{" + super.toString()+", username=" + username + '}';
+    }
+    
+    @Override
+    public void quienSoy(){
+        System.out.println("SOY TWITTER");
+    }
+    
 }
