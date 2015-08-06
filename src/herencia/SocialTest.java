@@ -20,10 +20,15 @@ public class SocialTest {
         */
         if(rst instanceof Twitter){
             //dowcasting para asignarle el username
-            System.out.println("Es Twitter!");
+            
+            //DOWNCASTING INDIRECTO
+            Twitter tw = (Twitter)rst;
+            tw.setUsername("@pancho");
+            //DOWNCASTING DIRECTO
+            System.out.println(((Twitter)rst).getUsername());
         }
         
-        System.out.println("objeto: " + rst.toString());
+        System.out.println("objeto: " + rst);
         
         rst.quienSoy();
         rsf.quienSoy();
