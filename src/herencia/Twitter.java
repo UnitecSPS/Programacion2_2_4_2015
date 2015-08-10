@@ -32,7 +32,6 @@ public class Twitter extends RedSocial {
 
     @Override
     /*
-    
     lo mismo:
      super.email
      this.email
