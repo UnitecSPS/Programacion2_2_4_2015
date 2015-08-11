@@ -14,7 +14,13 @@ public class SocialTest {
         //UPCASTING
         RedSocial rst = new Twitter("Pancho","Pepe","pancho@patito.com");
         RedSocial rsf = new Facebook("Pancho","Pepe","pancho@patito.com");
-        RedSocial rs = new RedSocial("Pancho","Pepe","pancho@patito.com");
+        RedSocial rs = new RedSocial("Pancho","Pepe","pancho@patito.com") {
+
+            @Override
+            boolean isMe(String u, String p) {
+                return true;
+            }
+        };
         /*FORMATO instanceof:
             objeto instanceof Clase
         */

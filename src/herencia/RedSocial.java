@@ -11,7 +11,7 @@ import java.util.ArrayList;
  *
  * @author Aula
  */
-public class RedSocial {
+public abstract class RedSocial {
     protected String nombre, password, email;
     protected ArrayList<Post> posts;
     
@@ -46,5 +46,7 @@ public class RedSocial {
     public void quienSoy(){
         System.out.println("SOY REDSOCIAL");
     }
+    
+    abstract boolean isMe(String u, String p);
     
 }

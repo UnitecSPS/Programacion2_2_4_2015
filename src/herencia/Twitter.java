@@ -45,5 +45,10 @@ public class Twitter extends RedSocial {
     public void quienSoy(){
         System.out.println("SOY TWITTER");
     }
+
+    @Override
+    boolean isMe(String u, String p) {
+        return u.equals(username) && isMyPassword(p);
+    }
     
 }

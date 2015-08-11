@@ -17,9 +17,23 @@ public class Granja {
         
         animalitos.add(new Perro("Pitbull"));
         animalitos.add(new Gato("Siames"));
-        animalitos.add(new Pollo("Salvaje"));
+        animalitos.add(new Pollo("Salvaje")); 
         animalitos.add(new Vaca("Suiza"));
-        //animalitos.add(new Animal(1,"Pata"));
+        
+        //Funciones On-Demand
+        Animal animal = new Animal(1,"Monstruo"){
+            int x = 4;
+            public void sound(){
+                System.out.print("Grr Grrr Grrr");
+            }
+            
+            @Override
+            public void makeSound(){
+                sound();
+                System.out.println(" "+x);
+            }
+        };
+        animalitos.add(animal);
         
         for(Animal ani : animalitos){
             ani.makeSound();

@@ -10,7 +10,7 @@ package herencia;
  * @author Aula
  */
 public class Facebook extends RedSocial {
-
+    
     public Facebook(String nombre, String password, String email) {
         super(nombre, password, email);
     }
@@ -18,6 +18,11 @@ public class Facebook extends RedSocial {
     @Override
     public void quienSoy(){
         System.out.println("SOY FACEBOOK");
+    }
+
+    @Override
+    boolean isMe(String u, String p) {
+        return u.equals(email) && isMyPassword(p);
     }
     
 }
