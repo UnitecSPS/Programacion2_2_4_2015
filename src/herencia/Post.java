@@ -12,13 +12,17 @@ import java.util.Date;
  * @author Aula
  */
 public class Post {
-    String body;
+    String body, autor;
     Date fecha;
-
-    public Post(String body) {
+    
+    public Post(String autor, String body) {
         this.body = body;
+        this.autor = autor;
         fecha = new Date();
     }
     
-    
+    public void print(){
+        System.out.println(autor + " - " + fecha+ ":");
+        System.out.println(body);
+    }
 }

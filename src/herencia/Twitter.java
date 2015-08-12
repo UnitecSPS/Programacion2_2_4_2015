@@ -9,7 +9,7 @@ package herencia;
  *
  * @author Aula
  */
-public class Twitter extends RedSocial {
+public final class Twitter extends RedSocial {
     private String username;
     
     public Twitter(String n, String p, String e){

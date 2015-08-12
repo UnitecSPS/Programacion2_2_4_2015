@@ -9,7 +9,8 @@ package herencia;
  *
  * @author Aula
  */
-public class Facebook extends RedSocial {
+public final class Facebook extends RedSocial {
+    
     
     public Facebook(String nombre, String password, String email) {
         super(nombre, password, email);

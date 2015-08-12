@@ -11,6 +11,9 @@ package herencia;
  */
 public class SocialTest {
     public static void main(String[] args) {
+        
+        RedSocial.testVersion();
+        
         //UPCASTING
         RedSocial rst = new Twitter("Pancho","Pepe","pancho@patito.com");
         RedSocial rsf = new Facebook("Pancho","Pepe","pancho@patito.com");
