@@ -9,8 +9,8 @@ package RedSocial;
  *
  * @author LEFF
  */
-public class Facebook extends Redsocial{
-
+public final class Facebook extends Redsocial{
+    
     public Facebook(String nombre, String password, String email) {
         super(nombre, password, email);
     }
@@ -18,6 +18,11 @@ public class Facebook extends Redsocial{
     @Override
     void quienSoy(){
         System.out.println("SOY FACEBOOK");
+    }
+
+    @Override
+    boolean isMe(String u, String p) {
+        return u.equals(email)&& isMyPassword(p);
     }
     
 }
