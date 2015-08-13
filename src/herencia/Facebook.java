@@ -5,11 +5,13 @@
  */
 package herencia;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Aula
  */
-public final class Facebook extends RedSocial {
+public final class Facebook extends RedSocial implements Commentable, Serializable{
     
     
     public Facebook(String nombre, String password, String email) {
@@ -24,6 +26,16 @@ public final class Facebook extends RedSocial {
     @Override
     boolean isMe(String u, String p) {
         return u.equals(email) && isMyPassword(p);
+    }
+
+    @Override
+    public void addComment(String body, String autor, int idpost) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteComment(int id) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
