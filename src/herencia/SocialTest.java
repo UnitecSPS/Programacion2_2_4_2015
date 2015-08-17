@@ -43,5 +43,27 @@ public class SocialTest {
         rsf.quienSoy();
         rs.quienSoy();
         
+        Commentable com = new Facebook(null, null, null);
+        
+        /*if(rsf instanceof Facebook)
+            ((Facebook)rsf).addComment(null, null, 0);
+        
+        if(rsf instanceof Instagram)
+            ((Instagram)rsf).addComment(null, null, 0);*/
+        if(rsf instanceof Commentable)
+            ((Commentable)rsf).addComment(null, null, 0);
+        
+        Commentable comme = new Commentable() {
+
+            @Override
+            public void addComment(String body, String autor, int idpost) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void deleteComment(int id) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        };
     }
 }

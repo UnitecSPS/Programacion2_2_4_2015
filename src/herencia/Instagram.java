@@ -5,27 +5,19 @@
  */
 package herencia;
 
-import java.io.Serializable;
-
 /**
  *
  * @author Aula
  */
-public final class Facebook extends RedSocial implements CommentablePlus{
-    
-    
-    public Facebook(String nombre, String password, String email) {
+public class Instagram extends RedSocial implements Commentable {
+
+    public Instagram(String nombre, String password, String email) {
         super(nombre, password, email);
-    }
-    
-    @Override
-    public void quienSoy(){
-        System.out.println("SOY FACEBOOK");
     }
 
     @Override
     boolean isMe(String u, String p) {
-        return u.equals(email) && isMyPassword(p);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -37,17 +29,5 @@ public final class Facebook extends RedSocial implements CommentablePlus{
     public void deleteComment(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public boolean printComment(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Facebook clone() throws CloneNotSupportedException {
-        return (Facebook)super.clone(); 
-    }
-    
-    
     
 }
