@@ -5,6 +5,7 @@
  */
 package pautas.examen1;
 
+import enums.TipoCuenta;
 import java.util.Calendar;
 
 /**
@@ -18,6 +19,7 @@ public final class CuentaAhorro extends CuentaBancaria {
     public CuentaAhorro(int c, String cli){
         super(c,cli);
         ultimaModi = Calendar.getInstance();
+        tipo = TipoCuenta.AHORRO;
     }
     
     public final boolean isActiva(){

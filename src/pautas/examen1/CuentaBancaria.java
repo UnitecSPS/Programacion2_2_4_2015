@@ -5,6 +5,8 @@
  */
 package pautas.examen1;
 
+import enums.TipoCuenta;
+
 /**
  *
  * @author Aula
@@ -13,6 +15,7 @@ public abstract class CuentaBancaria {
     protected int codigo;
     protected String cliente;
     protected double saldo;
+    public TipoCuenta tipo;
     
     public CuentaBancaria(int c, String cli){
         codigo = c;
