@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package trycatches;
+package trycatches.prueba3;
 
 /**
  *
  * @author Aula
  */
-public class InvalidAmountException extends Exception{
-    public InvalidAmountException(double m){
-        super(m+" No es un monto valido");
+public class IngresoInvalidoException extends RuntimeException {
+    public IngresoInvalidoException(){
+        super("Valor Ingresado No es Correcto");
     }
 }

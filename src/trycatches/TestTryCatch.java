@@ -29,6 +29,11 @@ public class TestTryCatch {
         }
         catch(Exception e){
             System.out.println("Error: "+e);
+            //e.printStackTrace();
+            System.out.println(e.getStackTrace()[0].getFileName());
+            System.out.println(e.getStackTrace()[0].getLineNumber());
+            System.out.println(e.getStackTrace()[0].getMethodName());
+            System.out.println(e.getStackTrace()[0].toString());
         }
         finally{
             System.out.println("Aqui Se ejecuta siempre!!");
@@ -52,7 +57,7 @@ public class TestTryCatch {
     private static void B() {
         System.out.println("---INICIANDO B---");
         Scanner lea = new Scanner(System.in);
-        //lea.close();
+        lea.close();
         int pos = lea.nextInt();
         int arr[] = {0,1,2,3};
         System.out.println(5/arr[pos]);

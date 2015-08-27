@@ -5,6 +5,8 @@
  */
 package trycatches;
 
+import java.io.IOException;
+
 /**
  *
  * @author Aula
@@ -12,7 +14,7 @@ package trycatches;
 public class CuentaBancaria {
     private double saldo=500;
     
-    public void depositar(double m){
+    public void depositar(double m)throws InvalidAmountException, IOException{
         if(m < 0)
             //FORMATO PARA LANZARLO: throw objeto instanciado throwable
             throw new InvalidAmountException(m);
