@@ -6,6 +6,7 @@
 package archivos;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 /**
@@ -45,4 +46,45 @@ public class MiFile {
         }
     }
     
+    boolean crearArchivo()throws IOException{
+        return file.createNewFile();
+    }
+    
+    boolean crearFolder(){
+        return file.mkdirs();
+    }
+    
+    boolean borrar(){
+        return file.delete();
+    }
+    
+    void dir(){
+        if(file.isDirectory()){
+            File childs[] = file.listFiles();
+            int files=0,dirs=0,bytes=0;
+            
+            for(File child : childs){
+                if(!child.isHidden()){
+                    //ultima fecha
+                    System.out.print(new Date(child.lastModified())+"\t");
+                    //tipo
+                    if(child.isDirectory()){
+                        dirs++;
+                        System.out.print("<DIR>\t ");
+                    }
+                    else{
+                        files++;
+                        System.out.print("     \t"+child.length()+" ");
+                        bytes += child.length();
+                    }
+                    //name
+                    System.out.println(child.getName());
+                }
+            }
+            //estadistica
+            System.out.println(files+ " archivos\t"+bytes+" bytes");
+            System.out.println(dirs+" directorios\t"+file.getFreeSpace()+ 
+                    " bytes libres.");
+        }
+    }
 }

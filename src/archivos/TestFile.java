@@ -23,6 +23,9 @@ public class TestFile {
             System.out.println("1- Conectarse a un archivo o Folder.");
             System.out.println("2- Ver Informacion");
             System.out.println("3- Crear Archivo");
+            System.out.println("4- Crear Folder");
+            System.out.println("5- Borrar");
+            System.out.println("6- DIR");
             System.out.println("Escoja opcion: ");
             
             try{
@@ -35,6 +38,26 @@ public class TestFile {
                     case 2:
                         mf.verInfo();
                         break;
+                    case 3:
+                        if( mf.crearArchivo() )
+                            System.out.println("Se creó!");
+                        else
+                            System.out.println("No se puede crear");
+                        break;
+                    case 4:
+                        if( mf.crearFolder())
+                            System.out.println("Se creó!");
+                        else
+                            System.out.println("No se puede crear");
+                        break;
+                    case 5:
+                        if( mf.borrar() )
+                            System.out.println("Se borro!");
+                        else
+                            System.out.println("No se puede borrar");
+                        break;
+                    case 6:
+                        mf.dir();
                 }
             }
             catch(NullPointerException e){
