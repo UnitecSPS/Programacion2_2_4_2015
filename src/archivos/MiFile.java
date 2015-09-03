@@ -29,7 +29,7 @@ public class MiFile {
             System.out.println("Path: "+file.getPath());
             System.out.println("Path Absoluta"+file.getAbsolutePath());
             System.out.println("Parent: "+file.getAbsoluteFile().getParentFile().getName());
-            System.out.println("Size en bytes: "+file.length());
+            System.out.println("Size en bytes: "+longitud(file));
             if(file.isFile())
                 System.out.println("Es un ARCHIVO");
             else if(file.isDirectory())
@@ -43,6 +43,7 @@ public class MiFile {
         else{
             System.out.println("Aun No Existe!");
             System.out.println("Path Absoluta"+file.getAbsolutePath());
+            System.out.println(longitud(file));
         }
     }
     
@@ -86,5 +87,28 @@ public class MiFile {
             System.out.println(dirs+" directorios\t"+file.getFreeSpace()+ 
                     " bytes libres.");
         }
+    }
+
+    public void tree() {
+        tree(file,"");
+    }
+
+    private void tree(File dir, String tab) {
+        if(dir.isDirectory()){
+            System.out.println(tab+dir.getName());
+            for(File child : dir.listFiles()){
+                tree(child,tab+"\t");
+            }
+        }
+    }
+
+    private long longitud(File file) {
+        if(file.isDirectory()){
+            long bytes =0;
+            for(File child : file.listFiles())
+                bytes += longitud(child);
+            return bytes;
+        }
+        return file.length();
     }
 }

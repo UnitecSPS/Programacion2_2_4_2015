@@ -26,6 +26,8 @@ public class TestFile {
             System.out.println("4- Crear Folder");
             System.out.println("5- Borrar");
             System.out.println("6- DIR");
+            System.out.println("7- TREE");
+            System.out.println("8- Salir");
             System.out.println("Escoja opcion: ");
             
             try{
@@ -58,6 +60,10 @@ public class TestFile {
                         break;
                     case 6:
                         mf.dir();
+                        break;
+                    case 7:
+                        mf.tree();
+                        break;
                 }
             }
             catch(NullPointerException e){
@@ -72,6 +78,6 @@ public class TestFile {
             catch(Exception e){
                 System.out.println("Error: " + e);
             }
-        }while(op!=7);
+        }while(op!=8);
     }
 }
