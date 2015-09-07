@@ -56,7 +56,15 @@ public class MiFile {
     }
     
     boolean borrar(){
-        return file.delete();
+        return borrar(file);
+    }
+    
+    private boolean borrar(File f){
+        if(f.isDirectory()){
+            for(File child : f.listFiles())
+                borrar(child);
+        }
+        return f.delete();
     }
     
     void dir(){

@@ -23,9 +23,7 @@ public class EscrituraTexto {
             System.out.println("Append?(s/n): ");
             char append = lea.next().toLowerCase().charAt(0);
             
-            try{
-                FileWriter fw = new FileWriter(path,append=='s');
-                
+            try(FileWriter fw = new FileWriter(path,append=='s')){
                 String texto;
                 do{
                     texto = lea.nextLine();
@@ -37,8 +35,6 @@ public class EscrituraTexto {
                         break;
                     
                 }while(true);
-                
-                fw.close();
             }
             catch(IOException e){
                 System.out.println(e);
