@@ -40,6 +40,20 @@ public class ArchivoBinarioTest {
             //actualizar puntos de, sumandole:
             int cod = lea.nextInt();
             double points = lea.nextDouble();
+            raf.seek(0);
+            while(raf.getFilePointer() < raf.length()){
+                int c = raf.readInt();
+                raf.readUTF();
+                long pos = raf.getFilePointer();
+                double pts = raf.readDouble();
+                raf.readBoolean();
+                
+                if(c==cod){
+                    raf.seek(pos);
+                    raf.writeDouble(pts+points);
+                    break;
+                }
+            }
         }
         catch(IOException e){
             
