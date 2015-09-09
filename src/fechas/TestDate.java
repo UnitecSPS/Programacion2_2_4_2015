@@ -6,6 +6,7 @@
 package fechas;
 
 import java.util.Date;
+import java.util.Scanner;
 
 /**
  *
@@ -13,6 +14,7 @@ import java.util.Date;
  */
 public class TestDate {
     public static void main(String[] args) {
+        
         Date fecha1 = new Date();
         Date fecha2 = new Date(3270021);
         
