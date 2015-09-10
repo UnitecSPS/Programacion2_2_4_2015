@@ -115,18 +115,107 @@ public class Cinemark {
         }
     }
     
+    public long searchMovie(int cp)throws IOException{
+        rp.seek(0);
+        while(rp.getFilePointer() < rp.length()){
+            int cod = rp.readInt();
+            if(cod == cp)
+                return rp.getFilePointer();
+            rp.readUTF();
+            rp.readLong();
+            rp.readUTF();
+            rp.readUTF();
+            rp.skipBytes(9);
+        }
+        return -1;
+    }
+    
     public void printSalaInfo(int n)throws IOException{
         if( existsSala(n) ){
             try(RandomAccessFile rs = getSalaFile(n)){
                 //TODO: Una funcion de busqueda movie seria bueno
-                
+                int cp = rs.readInt();
+                //busco esa pelicula
+                long pos = searchMovie(cp);
+                if(pos!=-1){
+                    //saco su nombre
+                    System.out.println("Movie: "+ rp.readUTF());
+                }
+                else{
+                    System.out.println("-No tiene pelicula asignada.");
+                }
+                //tipo
+                System.out.println("Tipo: "+rs.readUTF());
+                //precio
+                System.out.println("Precio: Lps."+rs.readDouble());
+                //horario
+                System.out.println("Horario: "+rs.readUTF());
+                //asientos
+                int asientos = rs.readInt();
+                System.out.println("Asientos: "+asientos);
+                //ocupados
+                for(int x=1; x<= asientos; x++){
+                    System.out.println("A["+x+"]: "+ 
+                            (rs.readBoolean() ? "X" : "_"));
+                }
             }
         }
         else
             System.out.println("Dicha Sala no Existe");
     }
+
     
     public boolean assignMovieToSala(int cp, int ns)throws IOException{
+        if(existsSala(ns)){
+            long pos = searchMovie(cp);
+            
+            if(pos != -1){
+                String np = rp.readUTF();
+                rp.readLong();
+                rp.readUTF();
+                rp.readUTF();
+                rp.readDouble();
+                
+                if(rp.readBoolean()){
+                    try(RandomAccessFile rs = getSalaFile(ns)){
+                        rs.writeInt(cp);
+                        System.out.println(np+" Asignada a Sala#"+ns);
+                        return true;
+                    }
+                }
+                else
+                    System.out.println(np+ " No esta disponible");
+            }
+            else
+                System.out.println("No existe");
+        }
+        else
+            System.out.println("No existe Sala");
+        
+        return false;
+    }
+    
+    public boolean venderTicket(int sala, int asiento)throws IOException{
+        if(existsSala(sala)){
+            try(RandomAccessFile rs = getSalaFile(sala)){
+                int cp = rs.readInt();
+                rs.readUTF();
+                double p = rs.readDouble();
+                //crear ticket
+                rt.seek(rt.length());
+                //codigo t
+                rt.writeInt(nextCode(TICKET_OFFSET));
+                //sala
+                rt.writeInt(sala);
+                //pelicula
+                rt.writeInt(cp);
+                //precio
+                rt.writeDouble(p);
+                //fecha
+                rt.writeLong(new Date().getTime()); 
+            }
+            return true;
+        }
         return false;
     }
 
