@@ -24,7 +24,7 @@ public class TestFile {
             System.out.println("2- Ver Informacion");
             System.out.println("3- Crear Archivo");
             System.out.println("4- Crear Folder");
-            System.out.println("5- Borrar");
+            System.err.println("5- Borrar");
             System.out.println("6- DIR");
             System.out.println("7- TREE");
             System.out.println("8- Salir");
