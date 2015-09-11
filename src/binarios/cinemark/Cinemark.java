@@ -8,6 +8,7 @@ package binarios.cinemark;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -199,7 +200,15 @@ public class Cinemark {
         if(existsSala(sala)){
             try(RandomAccessFile rs = getSalaFile(sala)){
                 int cp = rs.readInt();
-                rs.readUTF();
+                long bus = searchMovie(cp);
+                if (bus != -1){
+                 String p = rt.readUTF();
+                 String peli = rp.readUTF();
+                 if(peli.equalsIgnoreCase(p))
+                        System.out.println("Si hay pelicula asignada");
+                 else
+                        System.out.println("No hay pelicula asignada");
+                }
                 double p = rs.readDouble();
                 //crear ticket
                 rt.seek(rt.length());
@@ -213,6 +222,22 @@ public class Cinemark {
                 rt.writeDouble(p);
                 //fecha
                 rt.writeLong(new Date().getTime()); 
+                
+                rs.seek(0);
+                rs.readInt();
+                rs.readUTF();
+                rs.readUTF();
+                rs.readDouble();
+                rs.readUTF();
+                rs.readInt();
+                for(int x=1; x <= asiento;x++){
+                    if(rs.readBoolean()==true){
+                   
+               }
+                    
+             }
+                
+                
             }
             return true;
         }
@@ -238,9 +263,23 @@ public class Cinemark {
      * Si la sala NO existe, se imprime dicha información.
      * @param sala Numero de la sala
      * @param beginning Fecha de inicio del reporte
+     * @throws java.io.IOException
      */
-    public void ticketsSoldInSala(int sala, Date beginning){
-        
+    public void ticketsSoldInSala(int sala, Date beginning) throws IOException{
+         if(existsSala(sala)){
+             try(RandomAccessFile rs = getSalaFile(sala)){
+                 int cp = rs.readInt();
+                 long pos = searchMovie(cp);
+                 if (pos != -1){
+                     System.out.println("Movie: " + rt.readUTF());
+                     System.out.println("Tipo: " + rt.readUTF());
+                     System.out.println("Precio LPS: " + rt.readDouble());
+                     System.out.println("Fecha: " + rt.readLong());
+                 }
+             }
+         }else
+             System.out.println("Sala no existe");
+         
     }
     
     /**
@@ -266,8 +305,19 @@ public class Cinemark {
      * asi ya no se puede asignar a una sala. Validar que la pelicula exista.
      * @param cp Codigo de la pelicula
      * @return Retornar true si se pudo inhabilitar o no.
+     * @throws java.io.IOException
      */
-    public boolean disableMovie(int cp){
+    public boolean disableMovie(int cp) throws IOException{
+        long search = searchMovie(cp);
+        if(search != -1){
+            rp.readUTF();
+            rp.readLong();
+            rp.readUTF();
+            rp.readUTF();
+            rp.readDouble();
+            rp.writeBoolean(false);
+            return true;
+        }
         return false;
     }
     
@@ -277,9 +327,22 @@ public class Cinemark {
      * hora actual es > 11 PM, si no lo es, se informa que aun no se puede 
      * limpiar la sala.
      * @param sala Numero de la sala
+     * @throws java.io.IOException
      */
-    public void cleanSala(int sala){
-        
+    public void cleanSala(int sala) throws IOException{
+        int fec = Calendar.HOUR;
+        fec += 12; 
+        if(fec > 23 ){
+            RandomAccessFile rs = getSalaFile(sala);
+            rs.readInt();
+            rs.readUTF();
+            rs.readDouble();
+            rs.readUTF();
+            int seats = rs.readInt();
+            for(int x = 1; x < seats;x++){
+                rs.writeBoolean(false);
+            }
+        }
     }
     
     /**

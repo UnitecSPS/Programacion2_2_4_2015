@@ -26,6 +26,11 @@ public class Cine {
             System.out.println("4- Asignar Pelicula");
             System.out.println("5- Imprimir Sala");
             System.out.println("6- Vender Ticket");
+            System.out.println("7- Imprimir Ticket");
+            System.out.println("8- Imprimir Cartelera");
+            System.out.println("9- Disable Movie");
+            System.out.println("10- Limpiar Sala");
+            System.out.println("11- Imprimir Taquilla");
             System.out.print("Escoja: ");
             
             try{
@@ -47,6 +52,12 @@ public class Cine {
                     case 5:
                         printSala();
                         break;
+                    case 6:
+                        venderTicket();
+                        break;
+                    case 7:
+                        ticketsSoldInSala();
+                        break;    
                 }
             }
             catch(InputMismatchException e){
@@ -63,7 +74,7 @@ public class Cine {
                 System.out.println("Error: " + e);
             }
             
-        }while(op!=7);
+        }while(op!=11);
     }
 
     private static void agregar() throws IOException{
