@@ -198,7 +198,9 @@ public class Cinemark {
     public boolean venderTicket(int sala, int asiento)throws IOException{
         if(existsSala(sala)){
             try(RandomAccessFile rs = getSalaFile(sala)){
-                int cp = rs.readInt();
+                
+                //Verifica que la sala tenga una pelicula
+                int cp = rs.readInt();  
                 
                 if(cp == 0)
                     return false;
@@ -209,7 +211,7 @@ public class Cinemark {
                 rs.readUTF();
                 int asientosMax = rs.readInt();
                 long asientosCantOffset = rs.getFilePointer();
-                
+ 
                 if(asiento > asientosMax)
                     return false;
                 
@@ -264,8 +266,31 @@ public class Cinemark {
      * @param sala Numero de la sala
      * @param beginning Fecha de inicio del reporte
      */
-    public void ticketsSoldInSala(int sala, Date beginning){
+    public void ticketsSoldInSala(int sala, Date beginning) throws IOException{
+        double montoTotal = 0;
         
+        rt.seek(0);
+        if(existsSala(sala)){
+            while(rt.getFilePointer() < rt.length()){
+                int ticketCode = rt.readInt();
+                int salaCode = rt.readInt();
+                int movieCode = rt.readInt();
+                double precio = rt.readDouble();
+                Date ticketDate = new Date(rt.readLong());
+
+                if(salaCode != sala || ticketDate.before(beginning))
+                    continue;
+
+                rp.seek(searchMovie(movieCode));
+                String movieName = rp.readUTF();
+
+                montoTotal += precio;
+
+                System.out.println("Codigo: " + movieCode + " Nombre: " + movieName + " Precio pagado: " + precio + " Fecha de pago: " + ticketDate);
+            }
+            System.out.println("MONTO TOTAL: " + montoTotal);
+        }else
+            System.out.println("La sala ingresada no existe.");
     }
     
     /**
