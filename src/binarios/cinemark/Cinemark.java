@@ -6,9 +6,15 @@
 package binarios.cinemark;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
 import java.util.Calendar;
+
+import java.time.LocalDate;
+
 import java.util.Date;
 
 /**
@@ -116,7 +122,7 @@ public class Cinemark {
         }
     }
     
-    public long searchMovie(int cp)throws IOException{
+        public long searchMovie(int cp)throws IOException{
         rp.seek(0);
         while(rp.getFilePointer() < rp.length()){
             int cod = rp.readInt();
@@ -308,7 +314,58 @@ public class Cinemark {
      * se comienza a escribir
      * @param txtfile Dirección del archivo de texto a exportar. 
      */
-    public void cartelera(String txtfile){
+    public void cartelera(String txtfile) throws FileNotFoundException, IOException
+    {
+        File report = new File(txtfile);
+        if(report.exists())
+        {
+           FileWriter fw = new FileWriter(report, false);
+           fw.write("");
+           fw.close();
+        }
+        
+        FileWriter fw = new FileWriter(report, true);
+        java.time.LocalDate now = LocalDate.now();
+        
+        int i = 0;
+        while(getSalaFile(i) != null)
+        {
+           RandomAccessFile reader = getSalaFile(++i); 
+           fw.write("Cartelera del Cine Para el "+now.getDayOfWeek()+" de "+now.getMonth()+" de "+now.getYear()+"\n\n\n");
+           int code = reader.readInt();
+           
+           long movieReader = searchMovie(code);
+           rp.seek(0);
+           rp.seek(movieReader);
+           
+           fw.write("Sala #"+code+"\nExhibe la Pelicula: "+rp.readUTF());
+           rp.readLong();
+           fw.write("-"+rp.readUTF()+"="+rp.readUTF() );
+           reader.readUTF();
+           reader.readDouble();
+           fw.write(" en horario de:" +reader.readUTF());
+           
+           reader.seek(0);
+           reader.readInt();
+           reader.readUTF();
+           
+           fw.write(" Lps."+reader.readDouble()+" - Tickets Vendidos: ");
+           reader.readUTF();
+           int seats = reader.readInt();
+           int soldSeats = 0;
+            for (int j = 0; j < seats; j++)
+            {
+                if(reader.readBoolean() == true)
+                {
+                    soldSeats++;
+                }
+            }
+            fw.write(soldSeats+" de "+seats);
+           
+           
+        }
+
+        
         
     }
     
@@ -318,7 +375,29 @@ public class Cinemark {
      * @param cp Codigo de la pelicula
      * @return Retornar true si se pudo inhabilitar o no.
      */
-    public boolean disableMovie(int cp){
+    public boolean disableMovie(int cp) throws IOException
+    {
+        long movie = searchMovie(cp);
+        if(movie != -1)
+        {
+            rp.seek(0);
+            
+            while(rp.getFilePointer() > rp.length())
+            {
+                rp.readInt();
+                rp.readUTF();
+                rp.readLong();
+                rp.readUTF();
+                rp.readUTF();
+                rp.readDouble();
+                
+                rp.writeBoolean(false);
+            }
+            return true;
+            
+        }
+            
+            
         return false;
     }
     
@@ -329,6 +408,7 @@ public class Cinemark {
      * limpiar la sala.
      * @param sala Numero de la sala
      */
+
     public void cleanSala(int sala) throws IOException{
         if(existsSala(sala)){
             try(RandomAccessFile rs = getSalaFile(sala)){
@@ -353,8 +433,9 @@ public class Cinemark {
      * su historia minimo la cantidad de tickets que se pide de parametro.
      * @param minimo Cantidad minima de tickets vendidos necesarios
      */
-    public void taquilleras(int minimo){
-        
+    public void taquilleras(int minimo)
+    {
+           
     }
     
     /**
