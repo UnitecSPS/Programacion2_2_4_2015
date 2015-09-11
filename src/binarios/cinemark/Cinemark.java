@@ -8,6 +8,7 @@ package binarios.cinemark;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -328,8 +329,23 @@ public class Cinemark {
      * limpiar la sala.
      * @param sala Numero de la sala
      */
-    public void cleanSala(int sala){
-        
+    public void cleanSala(int sala) throws IOException{
+        if(existsSala(sala)){
+            try(RandomAccessFile rs = getSalaFile(sala)){
+                rs.readInt();
+                rs.readUTF();
+                rs.readDouble();
+                rs.readUTF();
+                int asientosMax = rs.readInt();
+                
+                if(Calendar.getInstance().get(Calendar.HOUR) > 11){
+                    for(int i = 0; i <= asientosMax; i++)
+                        rs.writeBoolean(false);
+                }
+                else
+                    System.out.println("Aún no se puede limpiar la sala.");
+            }
+        }
     }
     
     /**
