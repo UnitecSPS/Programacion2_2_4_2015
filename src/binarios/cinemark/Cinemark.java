@@ -199,8 +199,33 @@ public class Cinemark {
         if(existsSala(sala)){
             try(RandomAccessFile rs = getSalaFile(sala)){
                 int cp = rs.readInt();
+                
+                if(cp == 0)
+                    return false;
+                
+                //Mueve el pointer hasta el numero de asientos y guarda el offset
+                rs.readUTF();
+                rs.readDouble();
+                rs.readUTF();
+                int asientosMax = rs.readInt();
+                long asientosCantOffset = rs.getFilePointer();
+                
+                if(asiento > asientosMax)
+                    return false;
+                
+                //Mueve el pointer hasta el precio
+                rs.seek(0);
+                rs.readInt();
                 rs.readUTF();
                 double p = rs.readDouble();
+                
+                //Mueve el pointer hasta el asiento
+                rs.seek(asientosCantOffset + asiento);
+                boolean asientoOcupado = rs.readBoolean();
+                
+                if(asientoOcupado)
+                    return false;
+                
                 //crear ticket
                 rt.seek(rt.length());
                 //codigo t
