@@ -115,19 +115,187 @@ public class Cinemark {
         }
     }
     
+    public long searchMovie(int cp)throws IOException{
+        rp.seek(0);
+        while(rp.getFilePointer() < rp.length()){
+            int cod = rp.readInt();
+            if(cod == cp)
+                return rp.getFilePointer();
+            rp.readUTF();
+            rp.readLong();
+            rp.readUTF();
+            rp.readUTF();
+            rp.skipBytes(9);
+        }
+        return -1;
+    }
+    
     public void printSalaInfo(int n)throws IOException{
         if( existsSala(n) ){
             try(RandomAccessFile rs = getSalaFile(n)){
                 //TODO: Una funcion de busqueda movie seria bueno
-                
+                int cp = rs.readInt();
+                //busco esa pelicula
+                long pos = searchMovie(cp);
+                if(pos!=-1){
+                    //saco su nombre
+                    System.out.println("Movie: "+ rp.readUTF());
+                }
+                else{
+                    System.out.println("-No tiene pelicula asignada.");
+                }
+                //tipo
+                System.out.println("Tipo: "+rs.readUTF());
+                //precio
+                System.out.println("Precio: Lps."+rs.readDouble());
+                //horario
+                System.out.println("Horario: "+rs.readUTF());
+                //asientos
+                int asientos = rs.readInt();
+                System.out.println("Asientos: "+asientos);
+                //ocupados
+                for(int x=1; x<= asientos; x++){
+                    System.out.println("A["+x+"]: "+ 
+                            (rs.readBoolean() ? "X" : "_"));
+                }
             }
         }
         else
             System.out.println("Dicha Sala no Existe");
     }
+
     
     public boolean assignMovieToSala(int cp, int ns)throws IOException{
+        if(existsSala(ns)){
+            long pos = searchMovie(cp);
+            
+            if(pos != -1){
+                String np = rp.readUTF();
+                rp.readLong();
+                rp.readUTF();
+                rp.readUTF();
+                rp.readDouble();
+                
+                if(rp.readBoolean()){
+                    try(RandomAccessFile rs = getSalaFile(ns)){
+                        rs.writeInt(cp);
+                        System.out.println(np+" Asignada a Sala#"+ns);
+                        return true;
+                    }
+                }
+                else
+                    System.out.println(np+ " No esta disponible");
+            }
+            else
+                System.out.println("No existe");
+        }
+        else
+            System.out.println("No existe Sala");
+        
         return false;
     }
+    
+    public boolean venderTicket(int sala, int asiento)throws IOException{
+        if(existsSala(sala)){
+            try(RandomAccessFile rs = getSalaFile(sala)){
+                int cp = rs.readInt();
+                rs.readUTF();
+                double p = rs.readDouble();
+                //crear ticket
+                rt.seek(rt.length());
+                //codigo t
+                rt.writeInt(nextCode(TICKET_OFFSET));
+                //sala
+                rt.writeInt(sala);
+                //pelicula
+                rt.writeInt(cp);
+                //precio
+                rt.writeDouble(p);
+                //fecha
+                rt.writeLong(new Date().getTime()); 
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    /*
+    TRABAJO EN GRUPO 3:
+    -------------------------------------
+    1- (10%)En vender ticket, validar que la sala tenga una pelicula asignada, que
+      el numero de asiento sea correcto segun el tamaño de la sala y que este
+      esté desocupado, si se cumple todo esto, se escribe true en dicho booleano
+      que representa ese asiento.
+    */
+    
+    /**
+     * 2- (20%)Esta función imprime todo el detalle de los tickets vendidos para una
+     * sala especifica. Se imprime el nombre de la pelicula junto con su código.
+     * El precio pagado y la fecha de cuando se pago. Se toman en cuenta TODOS
+     * los tickets guardados desde la fecha beginning hasta la actualidad.
+     * AL FINAL se imprime el MONTO TOTAL SUMADO entre el precio de todos los 
+     * tickets vendidos.
+     * Si la sala NO existe, se imprime dicha información.
+     * @param sala Numero de la sala
+     * @param beginning Fecha de inicio del reporte
+     */
+    public void ticketsSoldInSala(int sala, Date beginning){
+        
+    }
+    
+    /**
+     * 3- (25%)Funcion que imprime la cartelera del cine en pantalla. Se toman en
+     * cuenta TODAS las salas que tengan una pelicula asignada. Se imprime:
+     * - Sala #X Exhibe la pelicula: ####-[RATING]=[TIPO] en horario de: ####
+     *    Lps. PRECIO - Tickets vendidos: CANTIDAD VENDIDOS/TOTAL ASIENTOS.
+     * SI txtfile viene != "" se agarra ese valor como la direccion para expotar
+     * TODO este detalle a un archivo de texto donde al principio se escribe:
+     *  "CARTELERA DEL CINE PARA LA [FECHA]"
+     * NOTA: Para no duplicar codigos analicen como pueden usar el mismo texto
+     * que imprimen para tambien escribirlo en el archivo de texto si es
+     * necasario. Ademas si dicho archivo ya existia, se limipia todo cuando
+     * se comienza a escribir
+     * @param txtfile Dirección del archivo de texto a exportar. 
+     */
+    public void cartelera(String txtfile){
+        
+    }
+    
+    /**
+     * 4- (10%)Funcion que hace que una pelicula se vuelva inactiva. Una pelicula
+     * asi ya no se puede asignar a una sala. Validar que la pelicula exista.
+     * @param cp Codigo de la pelicula
+     * @return Retornar true si se pudo inhabilitar o no.
+     */
+    public boolean disableMovie(int cp){
+        return false;
+    }
+    
+    /**
+     * 5- (15%)Funcion que vuelve a escribir false TODOS los asientos de una Sala
+     * EXISTENTE en el cine. Pero tiene una validación que SOLO lo hace si la
+     * hora actual es > 11 PM, si no lo es, se informa que aun no se puede 
+     * limpiar la sala.
+     * @param sala Numero de la sala
+     */
+    public void cleanSala(int sala){
+        
+    }
+    
+    /**
+     * 6- (20%)Imprime todas las peliculas [codigo-nombre] que han vendido en toda
+     * su historia minimo la cantidad de tickets que se pide de parametro.
+     * @param minimo Cantidad minima de tickets vendidos necesarios
+     */
+    public void taquilleras(int minimo){
+        
+    }
+    
+    /**
+     * 7- (5%)Agregar dichas funciones al main de Cine.
+     */
+    
+    
+    
 
 }

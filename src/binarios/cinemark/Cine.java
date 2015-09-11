@@ -23,7 +23,9 @@ public class Cine {
             System.out.println("1- Agregar Pelicula");
             System.out.println("2- Listar Peliculas");
             System.out.println("3- Agregar Sala");
-            System.out.println("4- Imprimir Sala");
+            System.out.println("4- Asignar Pelicula");
+            System.out.println("5- Imprimir Sala");
+            System.out.println("6- Vender Ticket");
             System.out.print("Escoja: ");
             
             try{
@@ -40,6 +42,9 @@ public class Cine {
                         agregarSala();
                         break;
                     case 4:
+                        asignar();
+                        break;
+                    case 5:
                         printSala();
                         break;
                 }
@@ -105,6 +110,18 @@ public class Cine {
         System.out.println("Numero de sala: ");
         int n = lea.nextInt();
         cine.printSalaInfo(n);
+    }
+
+    private static void asignar()throws IOException {
+        System.out.print("Codigo Pelicula: ");
+        int cp = lea.nextInt();
+        System.out.print("Numero de sala: ");
+        int n = lea.nextInt();
+        
+        if(cine.assignMovieToSala(cp, n))
+            System.out.println("Pelicula Asignada con Exito");
+        else
+            System.out.println("No se puede asignar");
     }
     
 }
