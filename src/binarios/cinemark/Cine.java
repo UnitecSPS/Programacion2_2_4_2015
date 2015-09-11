@@ -56,6 +56,7 @@ public class Cine {
                         break;
                     case 6:
                         vender();
+                        break;
                     case 7:
                         printVentas();
                         break;
@@ -149,6 +150,7 @@ public class Cine {
     }
     
     private static void vender() throws IOException{
+        lea.useDelimiter("\n");
         System.out.print("Numero de sala: ");
         int sala = lea.nextInt();
         
