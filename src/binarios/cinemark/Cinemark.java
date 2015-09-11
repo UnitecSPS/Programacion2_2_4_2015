@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package binarios.cinemark;
+package Binarios.Cinemark;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.Date;
 
 /**
  *
- * @author Aula
+ * @author Osman Oliva
  */
 public class Cinemark {
     private RandomAccessFile rp, rt;
@@ -99,6 +99,12 @@ public class Cinemark {
         String path = ROOT+"/sala"+n+".cnk";
         return new File(path).exists();
     } 
+    
+    private boolean existsMovie(){
+        String path = ROOT+"/peliculas.cnk";
+        return new File(path).exists();
+    }
+    
     
     public void addSala(TypeSala tipo, String horario, int cant)throws IOException{
         int numero = nextCode(SALA_OFFSET);
@@ -199,20 +205,22 @@ public class Cinemark {
         if(existsSala(sala)){
             try(RandomAccessFile rs = getSalaFile(sala)){
                 int cp = rs.readInt();
-                rs.readUTF();
-                double p = rs.readDouble();
-                //crear ticket
-                rt.seek(rt.length());
-                //codigo t
-                rt.writeInt(nextCode(TICKET_OFFSET));
-                //sala
-                rt.writeInt(sala);
-                //pelicula
-                rt.writeInt(cp);
-                //precio
-                rt.writeDouble(p);
-                //fecha
-                rt.writeLong(new Date().getTime()); 
+                if(assignMovieToSala(cp, sala)){
+                    rs.readUTF();
+                    double p = rs.readDouble();
+                    //crear ticket
+                    rt.seek(rt.length());
+                    //codigo t
+                    rt.writeInt(nextCode(TICKET_OFFSET));
+                    //sala
+                    rt.writeInt(sala);
+                    //pelicula
+                    rt.writeInt(cp);
+                    //precio
+                    rt.writeDouble(p);
+                    //fecha
+                    rt.writeLong(new Date().getTime());
+                }
             }
             return true;
         }
@@ -239,8 +247,24 @@ public class Cinemark {
      * @param sala Numero de la sala
      * @param beginning Fecha de inicio del reporte
      */
-    public void ticketsSoldInSala(int sala, Date beginning){
-        
+    public void ticketsSoldInSala(int sala, Date beginning) throws IOException{
+        if(existsSala(sala)){
+            try(RandomAccessFile rs = getSalaFile(sala)){
+                
+                    System.out.println(rs.readUTF());
+                    double precio = rs.readDouble();
+                    
+                    rp.seek(0);
+                    while (rt.getFilePointer() < rt.length()){
+                        System.out.println(rt.readInt());
+                        System.out.println(rt.readInt());
+                        System.out.println(rt.readInt());
+                        System.out.println(rt.readDouble());
+                        System.out.println(rt.readLong());
+                }
+                
+            }
+        }
     }
     
     /**
@@ -267,7 +291,14 @@ public class Cinemark {
      * @param cp Codigo de la pelicula
      * @return Retornar true si se pudo inhabilitar o no.
      */
-    public boolean disableMovie(int cp){
+    public boolean disableMovie(int cp) throws IOException{
+        if(searchMovie(cp) != -1){
+           rp.seek(0);
+           rp.skipBytes(20);
+           rp.writeBoolean(false);
+            System.out.println("Pelicula esta Inactiva");
+            return true;
+        }
         return false;
     }
     
@@ -278,8 +309,26 @@ public class Cinemark {
      * limpiar la sala.
      * @param sala Numero de la sala
      */
-    public void cleanSala(int sala){
-        
+    public void cleanSala(int sala) throws IOException{
+        if(existsSala(sala)){
+            try(RandomAccessFile rs = getSalaFile(sala)){
+                Date close = new Date();
+                int hours = close.getHours();
+                if(hours > 23){
+                    rs.skipBytes(20);
+                    int asientos = rs.readInt();
+                    for(int x=1; x<= asientos; x++){
+                        rs.writeBoolean(false);
+                    }
+                }
+                else{
+                    System.out.println("Todavia no se puede limpiar la sala.");
+                }
+            }
+        }
+        else{
+            System.out.println("Sala no Existe");
+        }
     }
     
     /**
