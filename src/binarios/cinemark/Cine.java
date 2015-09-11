@@ -26,6 +26,12 @@ public class Cine {
             System.out.println("4- Asignar Pelicula");
             System.out.println("5- Imprimir Sala");
             System.out.println("6- Vender Ticket");
+            System.out.println("7- Imprimir Tickets Vendidos");
+            System.out.println("8- Imprimir Cartelera");
+            System.out.println("9- Desactivar Pelicula");
+            System.out.println("10- Boletos Vendidos");
+            System.out.println("11- Limpiar Sala");
+            System.out.println("12- Salir");
             System.out.print("Escoja: ");
             
             try{
@@ -47,6 +53,24 @@ public class Cine {
                     case 5:
                         printSala();
                         break;
+                    case 6:
+                        ventaTicket();
+                        break;
+                    case 7:
+                        reporte();
+                        break;
+                    case 8:
+                        cartelera();
+                        break;
+                    case 9:
+                        desactiveMovie();
+                        break;
+                    case 10:
+                        taquilla();
+                        break;
+                    case 11:
+                        limpiarSala();
+                        break;
                 }
             }
             catch(InputMismatchException e){
@@ -63,7 +87,7 @@ public class Cine {
                 System.out.println("Error: " + e);
             }
             
-        }while(op!=7);
+        }while(op!=12);
     }
 
     private static void agregar() throws IOException{
@@ -124,4 +148,47 @@ public class Cine {
             System.out.println("No se puede asignar");
     }
     
+    private static void ventaTicket() throws IOException{
+        System.out.print("Numero de Sala: ");
+        int s = lea.nextInt();
+        System.out.println("Numero de Asiento: ");
+        int a = lea.nextInt();
+        if (cine.venderTicket(s, a)) {
+            System.out.println("Ticket Vendido");
+        }else
+            System.out.println("No se pudo Vender Ticket");
+    }
+    
+    private static void reporte()throws IOException{
+        System.out.println("Numero de Sala: ");
+        int n = lea.nextInt();
+        cine.ticketsSoldInSala(n, null);
+    }
+    
+    private static void cartelera()throws IOException{
+        System.out.println("Ingrese Direccion: ");
+        String s = lea.next();
+        cine.cartelera(s);
+    }
+    
+    private static void desactiveMovie()throws IOException{
+        System.out.println("Cod de Pelicula: ");
+        int c = lea.nextInt();
+        if (cine.disableMovie(c)) {
+            System.out.println("Movie Desactivada");
+        }else
+            System.out.println("No se pudo Desactivar");
+    }
+    
+    private static void limpiarSala()throws IOException{
+        System.out.println("Cod de Sala");
+        int c = lea.nextInt();
+        cine.cleanSala(c);
+    }
+    
+    private static void taquilla()throws IOException{
+        System.out.println("Cantidad de Tickets Vendidos: ");
+        int cant = lea.nextInt();
+        cine.taquilleras(cant);
+    }
 }

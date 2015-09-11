@@ -8,6 +8,7 @@ package binarios.cinemark;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -19,6 +20,7 @@ public class Cinemark {
     public static final String ROOT = "cinemark";
     public static final int PELICULA_OFFSET = 0, SALA_OFFSET=4, TICKET_OFFSET=8;
     public static final int PRINT_ALL=0, PRINT_ACTIVE=1, PRINT_INACTIVE=2;
+    public int asientos = 0;
     
     public Cinemark(){
         try{
@@ -108,10 +110,10 @@ public class Cinemark {
             rs.writeDouble(tipo.precio);
             rs.writeUTF(horario);
             rs.writeInt(cant);
+            asientos=cant;
             for(int x=1; x <= cant; x++){
                 rs.writeBoolean(false);
             }
-            
         }
     }
     
@@ -213,6 +215,21 @@ public class Cinemark {
                 rt.writeDouble(p);
                 //fecha
                 rt.writeLong(new Date().getTime()); 
+                //int cont=0;
+                if (assignMovieToSala(sala, asiento)) {
+                    if (asiento < asientos) {
+                        if (!rs.readBoolean()) {
+                            rs.readInt();
+                            rp.readUTF();
+                            rs.readUTF();
+                            rs.readDouble();
+                            rs.readUTF();
+                            rs.readInt();//asientos
+                            rs.writeBoolean(true);
+                        }
+                    }else
+                        System.out.println("Este asiento no existe en esta Sala");
+                }
             }
             return true;
         }
@@ -239,8 +256,17 @@ public class Cinemark {
      * @param sala Numero de la sala
      * @param beginning Fecha de inicio del reporte
      */
-    public void ticketsSoldInSala(int sala, Date beginning){
-        
+    public void ticketsSoldInSala(int sala, Date beginning)throws IOException{
+        if(existsSala(sala)){
+            try(RandomAccessFile rs = getSalaFile(sala)){
+                int codigo = rp.readInt();
+                String movie = rp.readUTF();
+                Long fecha = rp.readLong();
+                Double precio = rt.readDouble();
+               
+                System.out.println("Codigo: "+codigo+"Nombre: "+movie+"Precio: "+precio+" Fecha de pago: "+fecha);
+            }      
+        }
     }
     
     /**
@@ -257,8 +283,15 @@ public class Cinemark {
      * se comienza a escribir
      * @param txtfile Dirección del archivo de texto a exportar. 
      */
-    public void cartelera(String txtfile){
-        
+    public void cartelera(String txtfile) throws IOException{
+       
+        try(RandomAccessFile txt = new RandomAccessFile(ROOT+"/txtfile", "rw")){
+            Rating r;
+           
+            int sala = txt.readInt();
+            String movie = txt.readUTF();
+            String rating = rp.readUTF();
+        }
     }
     
     /**
@@ -267,7 +300,19 @@ public class Cinemark {
      * @param cp Codigo de la pelicula
      * @return Retornar true si se pudo inhabilitar o no.
      */
-    public boolean disableMovie(int cp){
+    public boolean disableMovie(int cp)throws IOException{
+        rp.readInt();
+        long pos = searchMovie(cp);
+        if (pos != -1) {
+            rp.seek(pos);
+            rp.readUTF();
+            rp.readLong();
+            rp.readUTF();
+            rp.readUTF();
+            rp.readDouble();
+            rp.writeBoolean(false);
+            return true;
+        }
         return false;
     }
     
@@ -278,8 +323,20 @@ public class Cinemark {
      * limpiar la sala.
      * @param sala Numero de la sala
      */
-    public void cleanSala(int sala){
-        
+    public void cleanSala(int sala)throws IOException{
+        int actual= Calendar.HOUR_OF_DAY;
+        try(RandomAccessFile rf = getSalaFile(sala)){
+            if (existsSala(sala) && actual>=23) {
+                rf.readInt();
+                rf.readUTF();
+                rf.readDouble();
+                rf.readUTF();
+                rf.readInt();
+                for (int i = 0; i <= asientos; i++) {
+                    rf.writeBoolean(false);
+                }
+            }
+        }
     }
     
     /**
@@ -295,7 +352,4 @@ public class Cinemark {
      * 7- (5%)Agregar dichas funciones al main de Cine.
      */
     
-    
-    
-
 }
