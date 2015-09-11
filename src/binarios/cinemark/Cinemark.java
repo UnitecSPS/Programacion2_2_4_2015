@@ -230,9 +230,10 @@ public class Cinemark {
                 rs.readDouble();
                 rs.readUTF();
                 rs.readInt();
+                
                 for(int x=1; x <= asiento;x++){
-                    if(rs.readBoolean()==true){
-                   
+                    if(asiento == x){
+                        rs.writeBoolean(true);
                }
                     
              }
