@@ -8,6 +8,7 @@ package binarios.cinemark;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -218,8 +219,7 @@ public class Cinemark {
         }
         return false;
     }
-    
-    /*
+     /*
     TRABAJO EN GRUPO 3:
     -------------------------------------
     1- (10%)En vender ticket, validar que la sala tenga una pelicula asignada, que
@@ -238,8 +238,12 @@ public class Cinemark {
      * Si la sala NO existe, se imprime dicha información.
      * @param sala Numero de la sala
      * @param beginning Fecha de inicio del reporte
+     * @throws java.io.IOException
      */
-    public void ticketsSoldInSala(int sala, Date beginning){
+    public void ticketsSoldInSala(int sala, Date beginning)throws IOException{
+        RandomAccessFile rs = getSalaFile(sala);
+        System.out.println("Codigo Pelicula: "+rs.readInt());
+        System.out.println("Nombre Pelicula: "+rs.readUTF());
         
     }
     
@@ -267,9 +271,44 @@ public class Cinemark {
      * @param cp Codigo de la pelicula
      * @return Retornar true si se pudo inhabilitar o no.
      */
-    public boolean disableMovie(int cp){
+    public boolean existPelicula(int cp)throws IOException{ 
+        rp.seek(0);
+        while(rp.getFilePointer() < rp.length()){
+            if(cp == rp.readInt()){                
+                return true;
+            }
+            rp.readUTF();
+            rp.readLong();
+            rp.readUTF();
+            rp.readUTF();
+            rp.readDouble();
+            rp.readBoolean();
+            
+        }
         return false;
-    }
+        
+    }    
+    
+    public boolean disableMovie(int cp)throws IOException{
+        if(existPelicula(cp)){
+            rp.seek(0);
+            while(rp.getFilePointer() < rp.length()){         
+                int c = rp.readInt();
+                rp.readUTF();
+                rp.readLong();
+                rp.readUTF();
+                rp.readUTF();
+                rp.readDouble();
+                if(c == cp){
+                    rp.writeBoolean(false);
+                    return true;
+                }else{
+                    rp.readBoolean();
+                }
+            }   
+        }
+        return false;
+    }    
     
     /**
      * 5- (15%)Funcion que vuelve a escribir false TODOS los asientos de una Sala
@@ -278,8 +317,21 @@ public class Cinemark {
      * limpiar la sala.
      * @param sala Numero de la sala
      */
-    public void cleanSala(int sala){
-        
+    public void cleanSala(int sala)throws IOException{
+        Calendar hour = Calendar.getInstance();
+        if(23 == hour.get(Calendar.HOUR_OF_DAY)){
+            if(existsSala(sala)){
+                RandomAccessFile rs = getSalaFile(sala);
+                rs.readInt();
+                rs.readUTF();
+                rs.readDouble();
+                rs.readUTF();
+                int c = rs.readInt();
+                for(int x=1; x <= c; x++){
+                    rs.writeBoolean(false);
+                }
+            }
+        }
     }
     
     /**
@@ -294,7 +346,6 @@ public class Cinemark {
     /**
      * 7- (5%)Agregar dichas funciones al main de Cine.
      */
-    
     
     
 
