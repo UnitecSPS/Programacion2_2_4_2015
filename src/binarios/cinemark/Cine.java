@@ -5,7 +5,9 @@
  */
 package binarios.cinemark;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -26,6 +28,11 @@ public class Cine {
             System.out.println("4- Asignar Pelicula");
             System.out.println("5- Imprimir Sala");
             System.out.println("6- Vender Ticket");
+            System.out.println("7- Imprimir Ventas En Sala");
+            System.out.println("8- Imprimir Cartelera");
+            System.out.println("9- Deshabilitar Una Pelicula");
+            System.out.println("10- Vaciar Asientos En Una Sala");
+            System.out.println("11- Taquillera");
             System.out.print("Escoja: ");
             
             try{
@@ -47,6 +54,23 @@ public class Cine {
                     case 5:
                         printSala();
                         break;
+                    case 6:
+                        vender();
+                    case 7:
+                        printVentas();
+                        break;
+                    case 8:
+                        printCartelera();
+                        break;
+                    case 9:
+                        disableMovie();
+                        break;
+                    case 10:
+                        vaciarAsientos();
+                        break;
+                    case 11:
+                        ticketsVendidos();
+                        break;
                 }
             }
             catch(InputMismatchException e){
@@ -67,7 +91,7 @@ public class Cine {
     }
 
     private static void agregar() throws IOException{
-        System.out.println("Nombre: ");
+        System.out.print("Nombre: ");
         String n = lea.next();
         System.out.print("Rating ");
         for(Rating ts : Rating.values())
@@ -81,7 +105,7 @@ public class Cine {
         System.out.println(" : ");
         TypeMovie t = TypeMovie.valueOf(lea.next().toUpperCase());
         
-        System.out.println("Duracion en horas:");
+        System.out.print("Duracion en horas:");
         double d = lea.nextDouble();
         
         cine.addMovie(n, r, t, d);
@@ -107,7 +131,7 @@ public class Cine {
     }
 
     private static void printSala()throws IOException {
-        System.out.println("Numero de sala: ");
+        System.out.print("Numero de sala: ");
         int n = lea.nextInt();
         cine.printSalaInfo(n);
     }
@@ -122,6 +146,57 @@ public class Cine {
             System.out.println("Pelicula Asignada con Exito");
         else
             System.out.println("No se puede asignar");
+    }
+    
+    private static void vender() throws IOException{
+        System.out.print("Numero de sala: ");
+        int sala = lea.nextInt();
+        
+        System.out.print("Numero de asiento: ");
+        int asiento = lea.nextInt();
+        
+        cine.venderTicket(sala, asiento);
+    }
+    
+    private static void printVentas() throws IOException{
+        System.out.print("Numero de sala: ");
+        int sala = lea.nextInt();
+        
+        System.out.println("Ingrese la fecha de inicio");
+        System.out.print("Año: ");
+        int year = lea.nextInt();
+        System.out.print("Mes: ");
+        int month = lea.nextInt() + 1;
+        System.out.print("Dia: ");
+        int dia = lea.nextInt();
+        
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, dia);
+        
+        cine.ticketsSoldInSala(sala, calendar.getTime());
+        
+    }
+    
+    private static void printCartelera() throws IOException{
+        System.out.print("Nombre de archivo a exportar(Deje este campo vacio si no desea exportarlo): ");
+        String fileName = lea.next();
+        
+        cine.cartelera(fileName);
+    }
+    
+    private static void disableMovie() throws IOException{
+        System.out.print("Codigo de pelicula");
+        cine.disableMovie(lea.nextInt());
+    }
+    
+    private static void vaciarAsientos() throws IOException{
+        System.out.print("Numero de sala: ");
+        cine.cleanSala(lea.nextInt());
+    }
+    
+    private static void ticketsVendidos() throws IOException{
+        System.out.print("Cantidad de tickets: ");
+        cine.taquilleras(lea.nextInt());
     }
     
 }
