@@ -6,6 +6,7 @@
 package binarios.cinemark;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -26,6 +27,8 @@ public class Cine {
             System.out.println("4- Asignar Pelicula");
             System.out.println("5- Imprimir Sala");
             System.out.println("6- Vender Ticket");
+            System.out.println("7- Tickets Vendidos");
+            System.out.println("8- Cartelera");
             System.out.print("Escoja: ");
             
             try{
@@ -47,6 +50,15 @@ public class Cine {
                     case 5:
                         printSala();
                         break;
+                    case 6:
+                        vender();
+                        break;
+                    case 7:
+                        tickets();
+                        break;
+                    case 8:
+                        cine.cartelera("cartelera.doc");
+                        break;
                 }
             }
             catch(InputMismatchException e){
@@ -63,7 +75,7 @@ public class Cine {
                 System.out.println("Error: " + e);
             }
             
-        }while(op!=7);
+        }while(op!=10);
     }
 
     private static void agregar() throws IOException{
@@ -122,6 +134,29 @@ public class Cine {
             System.out.println("Pelicula Asignada con Exito");
         else
             System.out.println("No se puede asignar");
+    }
+
+    private static void vender()throws IOException {
+        System.out.print("Numero de sala: ");
+        int n = lea.nextInt();
+        System.out.print("Numero de asiento: ");
+        int a = lea.nextInt();
+        
+        if(cine.venderTicket(n, a))
+            System.out.println("Vendido!\n\n");
+    }
+
+    private static void tickets()throws IOException {
+        System.out.print("Numero de sala: ");
+        int n = lea.nextInt();
+        System.out.println("Fecha (D/M/A): ");
+        String fecha = lea.next();
+        String datos[] = fecha.split("/");
+        Calendar c = Calendar.getInstance();
+        c.set(Integer.parseInt(datos[2]),
+                Integer.parseInt(datos[1])-1,
+                Integer.parseInt(datos[0]));
+        cine.ticketsSoldInSala(n, c.getTime());
     }
     
 }
