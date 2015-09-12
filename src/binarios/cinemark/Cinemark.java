@@ -6,6 +6,7 @@
 package binarios.cinemark;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Date;
@@ -199,24 +200,50 @@ public class Cinemark {
         if(existsSala(sala)){
             try(RandomAccessFile rs = getSalaFile(sala)){
                 int cp = rs.readInt();
-                rs.readUTF();
-                double p = rs.readDouble();
-                //crear ticket
-                rt.seek(rt.length());
-                //codigo t
-                rt.writeInt(nextCode(TICKET_OFFSET));
-                //sala
-                rt.writeInt(sala);
-                //pelicula
-                rt.writeInt(cp);
-                //precio
-                rt.writeDouble(p);
-                //fecha
-                rt.writeLong(new Date().getTime()); 
+                if( cp >  0){
+                    //--Codigo referente a sala
+                    rs.readUTF();
+                    double p = rs.readDouble();
+                    String h = rs.readUTF();
+                    int cant = rs.readInt();
+                    if(asiento>0 && asiento <= cant){
+                        rs.skipBytes(asiento-1);
+                        if(!rs.readBoolean()){
+                            rs.seek(rs.getFilePointer()-1);
+                            rs.writeBoolean(true);
+                            crearTicket(sala, cp, p);
+                            System.out.println("Gracias por comprar tu ticket para la sala "+
+                                    sala + " en horario: " + h + " lps."+p);
+                            return true;
+                        }
+                        else{
+                            System.out.println("Asiento Ocupado");
+                        }
+                    }
+                    else{
+                        System.out.println("Asiento Incorrecto");
+                    }
+                }
+                else
+                    System.out.println("No hay pelicula asignada");
             }
-            return true;
         }
         return false;
+    }
+    
+    public void crearTicket(int sala,int cp,double p)throws IOException{
+        //crear ticket-----------------
+        rt.seek(rt.length());
+        //codigo t
+        rt.writeInt(nextCode(TICKET_OFFSET));
+        //sala
+        rt.writeInt(sala);
+        //pelicula
+        rt.writeInt(cp);
+        //precio
+        rt.writeDouble(p);
+        //fecha
+        rt.writeLong(new Date().getTime());
     }
     
     /*
@@ -239,8 +266,36 @@ public class Cinemark {
      * @param sala Numero de la sala
      * @param beginning Fecha de inicio del reporte
      */
-    public void ticketsSoldInSala(int sala, Date beginning){
+    public void ticketsSoldInSala(int sala, Date beginning)throws IOException{
+        double suma = 0;
         
+        if(existsSala(sala)){
+            rt.seek(0);
+            while(rt.getFilePointer() < rt.length()){
+                //codigo t
+                int ct = rt.readInt();
+                //sala
+                int st = rt.readInt();
+                //pelicula
+                int pt = rt.readInt();
+                //precio
+                double mt = rt.readDouble();
+                //fecha
+                Date ft = new Date(rt.readLong());
+                
+                if(st==sala && ft.compareTo(beginning)>=0){
+                    searchMovie(pt);
+                    String pn = rp.readUTF();
+                    System.out.println(ct+"-["+pt+" "+pn+"] Lps."+
+                            mt+ " en "+ ft);
+                    suma += mt;
+                }
+            }
+            System.out.println("Suma total vendida: Lps." + suma+
+                    " desde: " + beginning);
+        }
+        else
+            System.out.println("Sala no existe");
     }
     
     /**
@@ -257,8 +312,50 @@ public class Cinemark {
      * se comienza a escribir
      * @param txtfile Dirección del archivo de texto a exportar. 
      */
-    public void cartelera(String txtfile){
+    public void cartelera(String txtfile)throws IOException{
+        String datos="CARTELERA DEL CINE PARA LA FECHA "+
+                new Date()+"\n-----------------------------\n";
         
+        int csalas=1;
+        
+        do{
+            if(!existsSala(csalas))
+                break;
+            try(RandomAccessFile rs = getSalaFile(csalas)){
+                int cp = rs.readInt();
+                if( cp >  0){
+                    rs.readUTF();//tipo
+                    double ps = rs.readDouble();//precio
+                    String hs = rs.readUTF();//horario
+                    int asientos = rs.readInt();//asientos
+                    int vendidos=0;
+                    for(int a=1; a <= asientos; a++){
+                        if(rs.readBoolean())
+                            vendidos++;
+                    }
+                    datos += "- Sala #"+csalas+" exhibe la pelicula "+
+                            datosMovie(cp)+" en horario de " +hs+ " Lps."+
+                            ps+" tickets vendidos: "+vendidos+"/"+asientos+"\n";
+                }
+            }
+            csalas++;
+        }while(true);
+        
+        System.out.println(datos);
+        //lo exportamos?
+        if(!txtfile.equals("")){
+            FileWriter fw = new FileWriter(txtfile);
+            fw.write(datos);
+            fw.close();
+        }
+    }
+    
+    private String datosMovie(int cp)throws IOException{
+        searchMovie(cp);
+        String dato = rp.readUTF();
+        rp.readLong();
+        dato += "-"+rp.readUTF()+" "+rp.readUTF();
+        return dato;
     }
     
     /**
