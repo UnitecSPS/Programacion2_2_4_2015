@@ -29,6 +29,10 @@ public class Cine {
             System.out.println("6- Vender Ticket");
             System.out.println("7- Tickets Vendidos");
             System.out.println("8- Cartelera");
+            System.out.println("9- Deshabilitar Movie");
+            System.out.println("10-Limpiar Sala");
+            System.out.println("11-Taquilleras");
+            System.out.println("12-Salir");
             System.out.print("Escoja: ");
             
             try{
@@ -59,6 +63,15 @@ public class Cine {
                     case 8:
                         cine.cartelera("cartelera.doc");
                         break;
+                    case 9:
+                        deshabilitar();
+                        break;
+                    case 10:
+                        cleanSala();
+                        break;
+                    case 11:
+                        taquilleras();
+                        break;
                 }
             }
             catch(InputMismatchException e){
@@ -75,7 +88,7 @@ public class Cine {
                 System.out.println("Error: " + e);
             }
             
-        }while(op!=10);
+        }while(op!=12);
     }
 
     private static void agregar() throws IOException{
@@ -157,6 +170,27 @@ public class Cine {
                 Integer.parseInt(datos[1])-1,
                 Integer.parseInt(datos[0]));
         cine.ticketsSoldInSala(n, c.getTime());
+    }
+
+    private static void deshabilitar()throws IOException{
+        System.out.print("Numero de Pelicula: ");
+        int p = lea.nextInt();
+        if(cine.disableMovie(p))
+            System.out.println("Deshabilitada");
+        else
+            System.out.println("Movie no existe");
+    }
+
+    private static void cleanSala()throws IOException {
+        System.out.print("Numero de sala: ");
+        int n = lea.nextInt();
+        cine.cleanSala(n);
+    }
+
+    private static void taquilleras()throws IOException {
+        System.out.print("Minimo: ");
+        int n = lea.nextInt();
+        cine.taquilleras(n);
     }
     
 }

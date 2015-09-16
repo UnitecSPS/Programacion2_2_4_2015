@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -364,7 +365,16 @@ public class Cinemark {
      * @param cp Codigo de la pelicula
      * @return Retornar true si se pudo inhabilitar o no.
      */
-    public boolean disableMovie(int cp){
+    public boolean disableMovie(int cp)throws IOException{
+        if(searchMovie(cp) != -1){
+            rp.readUTF();
+            rp.readLong();
+            rp.readUTF();
+            rp.readUTF();
+            rp.readDouble();
+            rp.writeBoolean(false);
+            return true;
+        }
         return false;
     }
     
@@ -375,8 +385,22 @@ public class Cinemark {
      * limpiar la sala.
      * @param sala Numero de la sala
      */
-    public void cleanSala(int sala){
-        
+    public void cleanSala(int sala)throws IOException{
+        if(existsSala(sala)){
+            try(RandomAccessFile rs = getSalaFile(sala)){
+                Calendar c = Calendar.getInstance();
+                int hora = c.get(Calendar.HOUR_OF_DAY);
+                if(hora >= 23){
+                    rs.readInt();
+                    rs.readUTF();
+                    rs.readDouble();
+                    rs.readUTF();
+                    int cantidad = rs.readInt();
+                    for(int a=1; a <= cantidad; a++)
+                        rs.writeBoolean(false);
+                }
+            }
+        }
     }
     
     /**
@@ -384,8 +408,34 @@ public class Cinemark {
      * su historia minimo la cantidad de tickets que se pide de parametro.
      * @param minimo Cantidad minima de tickets vendidos necesarios
      */
-    public void taquilleras(int minimo){
-        
+    public void taquilleras(int minimo)throws IOException{
+        rp.seek(0);
+        while(rp.getFilePointer() < rp.length()){
+            int cp = rp.readInt();
+            String np = rp.readUTF();
+            rp.readLong();
+            rp.readUTF();
+            rp.readUTF();
+            rp.skipBytes(9);
+            
+            int tickets = ticketsVendidosPara(cp);
+            
+            if(tickets >= minimo){
+                System.out.println("-"+cp+" "+np);
+            }
+        }
+    }
+
+    private int ticketsVendidosPara(int cp) throws IOException{
+        int cont=0;
+        rt.seek(0);
+        while(rt.getFilePointer() < rt.length()){
+            rt.skipBytes(8);
+            if(rt.readInt()==cp)
+                cont++;
+            rt.skipBytes(16);
+        }
+        return cont;
     }
     
     /**
