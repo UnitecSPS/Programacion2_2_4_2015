@@ -21,7 +21,10 @@ public class TestMiLista {
         do{
             System.out.println("1- Agregar");
             System.out.println("2- Imprimir");
-            System.out.println("3- Salir");
+            System.out.println("3- Borrar");
+            System.out.println("4- Agregar En");
+            System.out.println("5- Size");
+            System.out.println("6- Salir");
             System.out.println("Opcion: ");
             op = lea.nextInt();
             
@@ -32,8 +35,17 @@ public class TestMiLista {
                 case 2:
                     lista.print();
                     break;
+                case 3:
+                    borrar();
+                    break;
+                case 4:
+                    agregarEn();
+                    break;
+                case 5:
+                    System.out.println("Size: " + lista.size());
+                    break;
             }
-        }while(op!=3);
+        }while(op!=6);
     }
 
     private static void agregar() {
@@ -42,5 +54,21 @@ public class TestMiLista {
         System.out.println("Puntos: ");
         int pts = lea.nextInt();
         lista.add(new Nodo(n, pts));
+    }
+
+    private static void borrar() {
+        System.out.println("Nombre: ");
+        String n = lea.next();
+        lista.remove(n);
+    }
+
+    private static void agregarEn() {
+      System.out.println("¨Posicion (>=0): ");
+      int pos = lea.nextInt();
+      System.out.println("Nombre: ");
+      String n = lea.next();
+      System.out.println("Puntos: ");
+      int pts = lea.nextInt();
+      lista.add(pos, new Nodo(n, pts));
     }
 }

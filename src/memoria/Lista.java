@@ -37,6 +37,67 @@ public class Lista {
     }
     
     public void remove(String n){
+        if(!isEmpty()){
+            if(inicio.nombre.equals(n))
+                inicio = inicio.siguiente;
+            else{
+                Nodo tmp = inicio;
+                
+                while(tmp.siguiente != null){
+                    if(tmp.siguiente.nombre.equals(n))
+                        tmp.siguiente = tmp.siguiente.siguiente;
+                    else
+                        tmp = tmp.siguiente;
+                }
+            }
+        }
+    }
+    
+    public void add(int index, Nodo obj){
+        if(index == 0){
+            obj.siguiente = inicio;
+            inicio = obj;
+        }
+        else{
+            Nodo tmp = inicio;
+            int contador=0;
+            
+            while(tmp.siguiente != null){
+                if(contador != index-1){
+                    tmp = tmp.siguiente;
+                    contador++;
+                }
+                else
+                    break;
+            }
+            
+            //conectar
+            obj.siguiente = tmp.siguiente;
+            tmp.siguiente = obj;
+        }
+    }
+    
+    public int size(){
+        int size=0;
+        Nodo tmp = inicio;
+        
+        while(tmp != null){
+            size++;
+            tmp = tmp.siguiente;
+        }
+        
+        return size;
+    }
+    
+    public void clear(){
+        inicio = null;
+    }
+    
+    public Nodo[] toArray(){
+        return null;
+    }
+    
+    public void set(int index, Nodo obj){
         
     }
 }
